@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock the Moon</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at center, #0b0c10, #000);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      color: #fff;
+    }
+    .guitar-btn {
+      background: linear-gradient(45deg, #ff0080, #7928ca);
+      border: none;
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255, 0, 128, 0.7);
+      font-size: 40px;
+      color: #fff;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 20px #ff0080; }
+      50% { transform: scale(1.1); box-shadow: 0 0 40px #7928ca; }
+      100% { transform: scale(1); box-shadow: 0 0 20px #ff0080; }
+    }
+    .star {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .message {
+      position: absolute;
+      top: 10%;
+      font-size: 2rem;
+      text-shadow: 0 0 15px #ff0080;
+      opacity: 0;
+      transition: opacity 0.8s;
+    }
+    .message.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <button class="guitar-btn">🎸</button>
+  <div class="message" id="message">You Rocked the Moon! 🚀</div>
+
+  <!-- Background music -->
+  <audio id="rockmusic" src="music.mp3"></audio>
+
+  <script>
+    const button = document.querySelector('.guitar-btn');
+    const message = document.getElementById('message');
+    const music = document.getElementById('rockmusic');
+
+    button.addEventListener('click', () => {
+      // Play music if not already playing
+      if (music.paused) {
+        music.play().catch(err => console.log('Autoplay blocked:', err));
+      }
+
+      // Show message
+      message.classList.add('show');
+      setTimeout(() => message.classList.remove('show'), 2000);
+
+      // Create star explosion
+      for (let i = 0; i < 20; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        document.body.appendChild(star);
+        const x = window.innerWidth / 2;
+        const y = window.innerHeight / 2;
+        star.style.left = x + 'px';
+        star.style.top = y + 'px';
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 200;
+        const dx = Math.cos(angle) * distance;
+        const dy = Math.sin(angle) * distance;
+
+        star.animate([
+          { transform: `translate(0, 0) scale(1)`, opacity: 1 },
+          { transform: `translate(${dx}px, ${dy}px) scale(0.5)`, opacity: 0 }
+        ], {
+          duration: 1000,
+          easing: 'ease-out',
+          fill: 'forwards'
+        });
+
+        setTimeout(() => star.remove(), 1000);
+      }
+    });
+  </script>
+</body>
+</html>
